@@ -19,7 +19,7 @@
 //     setLoading(true);
     
 //     try {
-//       const res = await axios.post("http://localhost:5000/api/customer/login", form);
+//       const res = await axios.post("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/login", form);
       
 //       if (!res.data || !res.data.token || !res.data.customerId) {
 //         setError("Login failed. Please try again.");
@@ -136,7 +136,7 @@ export default function CustomerLogin({ onRegisterClick, onClose }) {
     
     try {
       console.log("Submitting login with:", form.login);
-      const res = await axios.post("http://localhost:5000/api/customer/login", form);
+      const res = await axios.post("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/login", form);
       
       if (!res.data || !res.data.token || !res.data.customerId) {
         console.error("Login response invalid:", res.data);

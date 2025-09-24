@@ -12,7 +12,7 @@ const OrderSummary = ({
   updateQuantity,
   handleRemoveItem,
 }) => {
-  const baseUrl = "http://localhost:5000";
+  const baseUrl = "https://suyambufoodproducts-demohost-4.onrender.com";
   const [showCartModal, setShowCartModal] = useState(false);
   const [cartAnimation, setCartAnimation] = useState("");
 

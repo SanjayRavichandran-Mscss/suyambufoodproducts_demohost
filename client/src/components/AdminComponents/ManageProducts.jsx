@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
-const API_BASE = "http://localhost:5000/api/admin";
-const IMAGE_BASE = "http://localhost:5000";
+const API_BASE = "https://suyambufoodproducts-demohost-4.onrender.com/api/admin";
+const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
 const FALLBACK_IMAGE = `${IMAGE_BASE}/fallback-image.png`;
 
 const ManageProducts = () => {

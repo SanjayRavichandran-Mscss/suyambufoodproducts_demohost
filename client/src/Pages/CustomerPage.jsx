@@ -114,7 +114,7 @@
 //       const verifyCustomer = async () => {
 //         try {
 //           const response = await axios.get(
-//             `http://localhost:5000/api/customer/profile?customerId=${storedCustomerId}`,
+//             `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/profile?customerId=${storedCustomerId}`,
 //             {
 //               headers: {
 //                 "Content-Type": "application/json",
@@ -146,7 +146,7 @@
 //     if (!customerId) return [];
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:5000/api/customer/cart?customerId=${customerId}`,
+//         `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}`,
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
 //       console.log("CustomerPage.jsx - fetchCart response:", response.data);
@@ -163,7 +163,7 @@
 //     if (!customerId) return;
 //     try {
 //       const response = await axios.get(
-//         `http://localhost:5000/api/customer/wishlist?customerId=${customerId}`,
+//         `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/wishlist?customerId=${customerId}`,
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
 //       setWishlist(
@@ -180,7 +180,7 @@
 //     if (!customerId) return;
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:5000/api/customer/wishlist",
+//         "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/wishlist",
 //         { customerId, productId },
 //         { headers: { "Content-Type": "application/json", Origin: "http://localhost:5173" } }
 //       );
@@ -254,7 +254,7 @@
 //     const newQuantity = Math.max(1, item.quantity + change);
 //     try {
 //       await axios.put(
-//         "http://localhost:5000/api/customer/cart",
+//         "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
 //         { customerId, variantId, quantity: newQuantity },
 //         { headers: { "Content-Type": "application/json", Origin: "http://localhost:5173" } }
 //       );
@@ -271,7 +271,7 @@
 //     if (!customerId) return;
 //     try {
 //       await axios.delete(
-//         `http://localhost:5000/api/customer/cart?customerId=${customerId}&variantId=${variantId}`,
+//         `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}&variantId=${variantId}`,
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
 //       const updatedCart = await fetchCart();
@@ -572,7 +572,7 @@ export default function CustomerPage() {
       const verifyCustomer = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/customer/profile?customerId=${storedCustomerId}`,
+            `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/profile?customerId=${storedCustomerId}`,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -604,7 +604,7 @@ export default function CustomerPage() {
     if (!customerId) return [];
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/customer/cart?customerId=${customerId}`,
+        `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}`,
         { headers: { Origin: "http://localhost:5173" } }
       );
       console.log("CustomerPage.jsx - fetchCart response:", response.data);
@@ -621,7 +621,7 @@ export default function CustomerPage() {
     if (!customerId) return;
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/customer/wishlist?customerId=${customerId}`,
+        `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/wishlist?customerId=${customerId}`,
         { headers: { Origin: "http://localhost:5173" } }
       );
       setWishlist(
@@ -638,7 +638,7 @@ export default function CustomerPage() {
     if (!customerId) return;
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/customer/wishlist",
+        "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/wishlist",
         { customerId, productId },
         { headers: { "Content-Type": "application/json", Origin: "http://localhost:5173" } }
       );
@@ -712,7 +712,7 @@ export default function CustomerPage() {
     const newQuantity = Math.max(1, item.quantity + change);
     try {
       await axios.put(
-        "http://localhost:5000/api/customer/cart",
+        "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
         { customerId, variantId, quantity: newQuantity },
         { headers: { "Content-Type": "application/json", Origin: "http://localhost:5173" } }
       );
@@ -729,7 +729,7 @@ export default function CustomerPage() {
     if (!customerId) return;
     try {
       await axios.delete(
-        `http://localhost:5000/api/customer/cart?customerId=${customerId}&variantId=${variantId}`,
+        `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}&variantId=${variantId}`,
         { headers: { Origin: "http://localhost:5173" } }
       );
       const updatedCart = await fetchCart();
@@ -880,7 +880,7 @@ export default function CustomerPage() {
       {/* Menu Side Panel */}
       {isMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex"
+          className="fixed inset-0 bg-opacity-50 z-50 flex"
           onClick={handleCloseMenu}
         >
           <div
@@ -940,7 +940,7 @@ export default function CustomerPage() {
 
       {showAuthModal && (
         <div
-          className={`fixed inset-0 bg-black bg-opacity-50 flex z-50 transition-opacity duration-300 ${
+          className={`fixed inset-0 bg-opacity-50 flex z-50 transition-opacity duration-300 ${
             modalAnimation.includes("in") ? "opacity-100" : "opacity-0"
           }`}
           onClick={handleCloseModal}

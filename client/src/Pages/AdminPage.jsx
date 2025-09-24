@@ -40,7 +40,7 @@ export default function AdminPages() {
 
     const verifyAdmin = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/admin/verify", {
+        const response = await fetch("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/verify", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

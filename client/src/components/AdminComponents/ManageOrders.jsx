@@ -22,7 +22,7 @@ const ManageOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/customer/orders?customerId=1");
+        const response = await fetch("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/orders?customerId=1");
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
@@ -156,7 +156,7 @@ const ManageOrders = () => {
                       {order.items.map(item => (
                         <div key={item.product_id} className="flex items-center space-x-4">
                           <img
-                            src={`http://localhost:5000${item.thumbnail_url}`}
+                            src={`https://suyambufoodproducts-demohost-4.onrender.com${item.thumbnail_url}`}
                             alt={item.name}
                             className="w-16 h-16 object-cover rounded-md"
                             onError={(e) => {

@@ -15,7 +15,7 @@
 //   PackageCheck,
 // } from "lucide-react";
 
-// const IMAGE_BASE = "http://localhost:5000";
+// const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
 // const BRAND = "#B6895B";
 // const BRAND_HOVER = "#A7784D";
 
@@ -52,7 +52,7 @@
 //   useEffect(() => {
 //     let mounted = true;
 //     axios
-//       .get("http://localhost:5000/api/admin/products", {
+//       .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/products", {
 //         headers: { Origin: "http://localhost:5173" },
 //       })
 //       .then((res) => {
@@ -451,7 +451,7 @@ import {
   PackageCheck,
 } from "lucide-react";
 
-const IMAGE_BASE = "http://localhost:5000";
+const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
 const BRAND = "#B6895B";
 const BRAND_HOVER = "#A7784D";
 
@@ -503,7 +503,7 @@ export default function Banner({ productsData }) {
 
     let mounted = true;
     axios
-      .get("http://localhost:5000/api/admin/products", {
+      .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/products", {
         headers: { Origin: "http://localhost:5173" },
       })
       .then((res) => {
