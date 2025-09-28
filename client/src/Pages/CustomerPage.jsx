@@ -11,6 +11,7 @@
 // import CustomerRegister from "../components/Authentication/CustomerRegister";
 // import Cart from "../components/CustomerComponents/Cart";
 // import MyOrders from "../components/CustomerComponents/MyOrders";
+// import { Home, Menu, X,Search } from "lucide-react";
 
 // function decodeCustomerId(encodedId) {
 //   try {
@@ -56,6 +57,7 @@
 //   const [showOrdersModal, setShowOrdersModal] = useState(false);
 //   const [ordersAnimation, setOrdersAnimation] = useState("");
 //   const [headerSearch, setHeaderSearch] = useState("");
+//   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 //   const showMessage = (msg, icon = "success") => {
 //     Swal.fire({
@@ -283,6 +285,59 @@
 //     }
 //   };
 
+//   const handleHomeClick = () => {
+//     const params = new URLSearchParams();
+//     if (customerId) {
+//       params.set("customerId", btoa(customerId));
+//     }
+//     navigate(`/customer?${params.toString()}`);
+//   };
+
+//   const handleMenuClick = () => {
+//     setIsMenuOpen(true);
+//   };
+
+//   const handleCloseMenu = () => {
+//     setIsMenuOpen(false);
+//   };
+
+//   const handleSearchClick = () => {
+//     // If on a product page, navigate to the landing page first
+//     if (productId) {
+//       const params = new URLSearchParams();
+//       if (customerId) {
+//         params.set("customerId", btoa(customerId));
+//       }
+//       navigate(`/customer?${params.toString()}`);
+//       // Use setTimeout to allow navigation to complete before scrolling
+//       setTimeout(() => {
+//         const section = document.getElementById("shop-by-category");
+//         if (section) {
+//           section.scrollIntoView({ behavior: "smooth", block: "start" });
+//           const searchInput = section.querySelector("input[type='text']");
+//           if (searchInput) {
+//             searchInput.focus();
+//           }
+//         }
+//       }, 100);
+//     } else {
+//       // If already on landing page, scroll directly
+//       const section = document.getElementById("shop-by-category");
+//       if (section) {
+//         section.scrollIntoView({ behavior: "smooth", block: "start" });
+//         const searchInput = section.querySelector("input[type='text']");
+//         if (searchInput) {
+//           searchInput.focus();
+//         }
+//       }
+//     }
+//   };
+
+//   const handleCategoryClick = (value) => {
+//     window.dispatchEvent(new CustomEvent("setCategory", { detail: { value } }));
+//     handleCloseMenu();
+//   };
+
 //   if (loading) {
 //     return (
 //       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -303,7 +358,7 @@
 //   }
 
 //   return (
-//     <div className="min-h-screen bg-gray-50 flex flex-col custom-scrollbar">
+//     <div className="min-h-screen bg-gray-50 flex flex-col custom-scrollbar relative">
 //       <Header
 //         customerData={customerData}
 //         onLoginClick={handleLoginClick}
@@ -314,8 +369,9 @@
 //         onCartClick={handleCartClick}
 //         onOrdersClick={handleOrdersClick}
 //         onSearch={(query) => setHeaderSearch(query)}
+//         showHamburger={false}
 //       />
-//       <main className="flex-1 bg-gray-50 pt-20">
+//       <main className="flex-1 bg-gray-50 pt-20 pb-16 md:pb-0">
 //         {productId ? (
 //           <div className="md:px-8">
 //             <SingleProduct
@@ -332,7 +388,7 @@
 //         ) : (
 //           <>
 //             <Banner />
-//             <div className="md:px-8">
+//             <div className="md:px-8 pt-4">
 //               <Products
 //                 isLoggedIn={!!customerData}
 //                 customerId={customerId}
@@ -348,6 +404,83 @@
 //           </>
 //         )}
 //       </main>
+
+//       {/* Bottom Navigation for Mobile */}
+//       <div className="fixed bottom-0 left-0 w-full bg-white border-t shadow-lg flex justify-around items-center py-3 md:hidden z-50">
+//         <button onClick={handleMenuClick} className="flex flex-col items-center text-gray-600 hover:text-green-500">
+//           <Menu size={24} />
+//           <span className="text-xs mt-1">Menu</span>
+//         </button>
+//         <button onClick={handleHomeClick} className="flex flex-col items-center text-gray-600 hover:text-green-500">
+//           <Home size={24} />
+//           <span className="text-xs mt-1">Home</span>
+//         </button>
+//         <button onClick={handleSearchClick} className="flex flex-col items-center text-gray-600 hover:text-green-500">
+//           <Search size={24} />
+//           <span className="text-xs mt-1">Search</span>
+//         </button>
+//       </div>
+
+//       {/* Menu Side Panel */}
+//       {isMenuOpen && (
+//         <div
+//           className="fixed inset-0 bg-opacity-50 z-50 flex"
+//           onClick={handleCloseMenu}
+//         >
+//           <div
+//             className="bg-white w-full h-full p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out translate-x-0"
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <button onClick={handleCloseMenu} className="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+//               <X size={24} />
+//             </button>
+//             <h2 className="text-2xl font-bold mb-6">Menu</h2>
+
+//             {/* Quick Links Accordion */}
+//             <details className="mb-4">
+//               <summary className="text-lg font-semibold cursor-pointer hover:text-green-500">Quick Links</summary>
+//               <ul className="mt-2 space-y-2 pl-4 text-base">
+//                 <li><a href="#" className="hover:underline">Shop</a></li>
+//                 <li><a href="#" className="hover:underline">About Us</a></li>
+//                 <li><a href="#" className="hover:underline">Contact</a></li>
+//                 <li><a href="#" className="hover:underline">FAQs</a></li>
+//               </ul>
+//             </details>
+
+//             {/* Categories Accordion */}
+//             <details>
+//               <summary className="text-lg font-semibold cursor-pointer hover:text-green-500">Categories</summary>
+//               <ul className="mt-2 space-y-2 pl-4 text-base">
+//                 <li>
+//                   <button onClick={() => handleCategoryClick("oil items")} className="hover:underline w-full text-left">
+//                     Oils
+//                   </button>
+//                 </li>
+//                 <li>
+//                   <button onClick={() => handleCategoryClick("snacks items")} className="hover:underline w-full text-left">
+//                     Snacks
+//                   </button>
+//                 </li>
+//                 <li>
+//                   <button onClick={() => handleCategoryClick("sweet items")} className="hover:underline w-full text-left">
+//                     Sweets
+//                   </button>
+//                 </li>
+//                 <li>
+//                   <button onClick={() => handleCategoryClick("masala powders")} className="hover:underline w-full text-left">
+//                     Masala Powders
+//                   </button>
+//                 </li>
+//                 <li>
+//                   <button onClick={() => handleCategoryClick("dry fruits")} className="hover:underline w-full text-left">
+//                     Dry Fruits
+//                   </button>
+//                 </li>
+//               </ul>
+//             </details>
+//           </div>
+//         </div>
+//       )}
 
 //       {showAuthModal && (
 //         <div
@@ -441,19 +574,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -467,7 +587,7 @@ import CustomerLogin from "../components/Authentication/CustomerLogin";
 import CustomerRegister from "../components/Authentication/CustomerRegister";
 import Cart from "../components/CustomerComponents/Cart";
 import MyOrders from "../components/CustomerComponents/MyOrders";
-import { Home, Menu, X,Search } from "lucide-react";
+import { Home, Menu, X, Search } from "lucide-react";
 
 function decodeCustomerId(encodedId) {
   try {
@@ -536,21 +656,14 @@ export default function CustomerPage() {
 
     console.log('CustomerPage.jsx - customerId:', customerId, 'storedCustomerId:', storedCustomerId);
 
-    if (location.pathname.startsWith("/customer") && (!token || !storedCustomerId)) {
-      navigate("/", { replace: true });
-      return;
-    }
-
+    // If no token or storedCustomerId, allow rendering for non-logged-in users
     if (!token || !storedCustomerId) {
-      if (location.pathname !== "/") {
-        navigate("/", { replace: true });
-        return;
-      }
-      setVerified(true);
+      setVerified(false);
       setLoading(false);
       return;
     }
 
+    // Handle customerId in URL
     if (token && storedCustomerId && encodedCustomerId) {
       const decodedId = decodeCustomerId(encodedCustomerId);
       if (decodedId !== storedCustomerId) {
@@ -561,6 +674,7 @@ export default function CustomerPage() {
       }
     }
 
+    // Add customerId to URL if logged in and not present
     if (token && storedCustomerId && !encodedCustomerId) {
       const params = new URLSearchParams(location.search);
       params.set("customerId", btoa(storedCustomerId));
@@ -568,7 +682,8 @@ export default function CustomerPage() {
       return;
     }
 
-    if (token && storedCustomerId && encodedCustomerId) {
+    // Verify customer if logged in
+    if (token && storedCustomerId) {
       const verifyCustomer = async () => {
         try {
           const response = await axios.get(
@@ -589,7 +704,7 @@ export default function CustomerPage() {
           console.error("Failed to verify customer:", err);
           localStorage.removeItem("customerToken");
           localStorage.removeItem("customerId");
-          navigate("/", { replace: true });
+          setVerified(false);
         } finally {
           setLoading(false);
         }
@@ -598,7 +713,7 @@ export default function CustomerPage() {
     } else {
       setLoading(false);
     }
-  }, [encodedCustomerId, navigate, location.pathname, location.search]);
+  }, [encodedCustomerId, navigate, location.search]);
 
   const fetchCart = async () => {
     if (!customerId) return [];
@@ -635,7 +750,10 @@ export default function CustomerPage() {
   };
 
   const handleToggleWishlist = async (productId) => {
-    if (!customerId) return;
+    if (!customerId) {
+      showMessage("Please login to manage your wishlist", "warning");
+      return;
+    }
     try {
       const response = await axios.post(
         "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/wishlist",
@@ -681,6 +799,10 @@ export default function CustomerPage() {
   };
 
   const handleCartClick = () => {
+    if (!customerId) {
+      showMessage("Please login to view your cart", "warning");
+      return;
+    }
     setCartAnimation("slide-in");
     setShowCartModal(true);
   };
@@ -694,6 +816,10 @@ export default function CustomerPage() {
   };
 
   const handleOrdersClick = () => {
+    if (!customerId) {
+      showMessage("Please login to view your orders", "warning");
+      return;
+    }
     setOrdersAnimation("slide-in");
     setShowOrdersModal(true);
   };
@@ -707,6 +833,10 @@ export default function CustomerPage() {
   };
 
   const updateQuantity = async (variantId, change) => {
+    if (!customerId) {
+      showMessage("Please login to update your cart", "warning");
+      return;
+    }
     const item = cartItems.find((item) => String(item.product_variant_id) === String(variantId));
     if (!item) return;
     const newQuantity = Math.max(1, item.quantity + change);
@@ -726,7 +856,10 @@ export default function CustomerPage() {
   };
 
   const handleRemoveItem = async (variantId) => {
-    if (!customerId) return;
+    if (!customerId) {
+      showMessage("Please login to manage your cart", "warning");
+      return;
+    }
     try {
       await axios.delete(
         `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}&variantId=${variantId}`,
@@ -757,15 +890,33 @@ export default function CustomerPage() {
     setIsMenuOpen(false);
   };
 
-  const handleSearchClick = () => {
-    // If on a product page, navigate to the landing page first
+  const handleSearch = (query) => {
+    setHeaderSearch(query);
     if (productId) {
       const params = new URLSearchParams();
       if (customerId) {
         params.set("customerId", btoa(customerId));
       }
       navigate(`/customer?${params.toString()}`);
-      // Use setTimeout to allow navigation to complete before scrolling
+    }
+  };
+
+  useEffect(() => {
+    if (headerSearch && !productId) {
+      const section = document.getElementById("shop-by-category");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [headerSearch, productId]);
+
+  const handleSearchClick = () => {
+    if (productId) {
+      const params = new URLSearchParams();
+      if (customerId) {
+        params.set("customerId", btoa(customerId));
+      }
+      navigate(`/customer?${params.toString()}`);
       setTimeout(() => {
         const section = document.getElementById("shop-by-category");
         if (section) {
@@ -777,7 +928,6 @@ export default function CustomerPage() {
         }
       }, 100);
     } else {
-      // If already on landing page, scroll directly
       const section = document.getElementById("shop-by-category");
       if (section) {
         section.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -805,14 +955,6 @@ export default function CustomerPage() {
     );
   }
 
-  if (!verified && location.pathname.startsWith("/customer")) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-600">Verifying your account...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col custom-scrollbar relative">
       <Header
@@ -824,7 +966,7 @@ export default function CustomerPage() {
         fetchCart={fetchCart}
         onCartClick={handleCartClick}
         onOrdersClick={handleOrdersClick}
-        onSearch={(query) => setHeaderSearch(query)}
+        onSearch={handleSearch}
         showHamburger={false}
       />
       <main className="flex-1 bg-gray-50 pt-20 pb-16 md:pb-0">
