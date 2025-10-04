@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -12,7 +13,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
+const IMAGE_BASE = "http://localhost:5000";
 
 // Keep the same magnifier CSS (unchanged logic)
 const magnifierStyles = `
@@ -64,7 +65,7 @@ export default function SingleProduct({
     setSelectedVariantId(variantId ? String(variantId) : null);
   }, [location.search]);
 
-  // Fetch product (logic unchanged)
+  // Fetch product (logic unchanged, but allow display without login check)
   useEffect(() => {
     if (!productId) {
       setError("Invalid product ID");
@@ -79,7 +80,7 @@ export default function SingleProduct({
     }
 
     axios
-      .get(`https://suyambufoodproducts-demohost-4.onrender.com/api/admin/products/${idNum}`, {
+      .get(`http://localhost:5000/api/admin/products/${idNum}`, {
         headers: { Origin: "http://localhost:5173" },
       })
       .then((res) => {
@@ -165,7 +166,7 @@ export default function SingleProduct({
 
     if (item) {
       axios
-        .put("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart", body, {
+        .put("http://localhost:5000/api/customer/cart", body, {
           headers: { Origin: "http://localhost:5173" },
         })
         .then(() => {
@@ -175,7 +176,7 @@ export default function SingleProduct({
         .catch(() => showMessage("Failed to update cart"));
     } else {
       axios
-        .post("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart", body, {
+        .post("http://localhost:5000/api/customer/cart", body, {
           headers: { Origin: "http://localhost:5173" },
         })
         .then(() => {
@@ -207,7 +208,7 @@ export default function SingleProduct({
 
     if (!item) {
       axios
-        .post("https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart", body, {
+        .post("http://localhost:5000/api/customer/cart", body, {
           headers: { Origin: "http://localhost:5173" },
         })
         .then(() => {

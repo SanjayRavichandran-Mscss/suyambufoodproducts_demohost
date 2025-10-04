@@ -3,7 +3,7 @@
 // import { useNavigate } from "react-router-dom";
 // import { Heart, Plus, Minus } from "lucide-react";
 
-// const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
+// const IMAGE_BASE = "http://localhost:5000";
 // const BRAND = "#B6895B";
 
 // export default function Products({
@@ -44,7 +44,7 @@
 //     if (!customerId) return [];
 //     try {
 //       const response = await axios.get(
-//         `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}`,
+//         `http://localhost:5000/api/customer/cart?customerId=${customerId}`,
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
 //       return Array.isArray(response.data) ? response.data : [];
@@ -74,14 +74,14 @@
 //   // Fetch products + UOMs
 //   useEffect(() => {
 //     axios
-//       .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/uoms", {
+//       .get("http://localhost:5000/api/admin/uoms", {
 //         headers: { Origin: "http://localhost:5173" },
 //       })
 //       .then((res) => setUoms(res.data || []))
 //       .catch(() => {});
 
 //     axios
-//       .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/products", {
+//       .get("http://localhost:5000/api/admin/products", {
 //         headers: { Origin: "http://localhost:5173" },
 //       })
 //       .then((res) => {
@@ -213,7 +213,7 @@
 //     }
 //     try {
 //       await axios.post(
-//         "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
+//         "http://localhost:5000/api/customer/cart",
 //         { customerId, variantId, quantity },
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
@@ -243,7 +243,7 @@
 //     const newQuantity = Math.max(1, item.quantity + change);
 //     try {
 //       await axios.put(
-//         "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
+//         "http://localhost:5000/api/customer/cart",
 //         { customerId, variantId, quantity: newQuantity },
 //         { headers: { Origin: "http://localhost:5173" } }
 //       );
@@ -572,7 +572,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Heart, Plus, Minus, Search } from "lucide-react";
 
-const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
+const IMAGE_BASE = "http://localhost:5000";
 const BRAND = "#B6895B";
 
 export default function Products({
@@ -613,7 +613,7 @@ export default function Products({
     if (!customerId) return [];
     try {
       const response = await axios.get(
-        `https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart?customerId=${customerId}`,
+        `http://localhost:5000/api/customer/cart?customerId=${customerId}`,
         { headers: { Origin: "http://localhost:5173" } }
       );
       return Array.isArray(response.data) ? response.data : [];
@@ -643,14 +643,14 @@ export default function Products({
   // Fetch products + UOMs
   useEffect(() => {
     axios
-      .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/uoms", {
+      .get("http://localhost:5000/api/admin/uoms", {
         headers: { Origin: "http://localhost:5173" },
       })
       .then((res) => setUoms(res.data || []))
       .catch(() => {});
 
     axios
-      .get("https://suyambufoodproducts-demohost-4.onrender.com/api/admin/products", {
+      .get("http://localhost:5000/api/admin/products", {
         headers: { Origin: "http://localhost:5173" },
       })
       .then((res) => {
@@ -782,7 +782,7 @@ export default function Products({
     }
     try {
       await axios.post(
-        "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
+        "http://localhost:5000/api/customer/cart",
         { customerId, variantId, quantity },
         { headers: { Origin: "http://localhost:5173" } }
       );
@@ -812,7 +812,7 @@ export default function Products({
     const newQuantity = Math.max(1, item.quantity + change);
     try {
       await axios.put(
-        "https://suyambufoodproducts-demohost-4.onrender.com/api/customer/cart",
+        "http://localhost:5000/api/customer/cart",
         { customerId, variantId, quantity: newQuantity },
         { headers: { Origin: "http://localhost:5173" } }
       );

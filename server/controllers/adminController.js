@@ -4,7 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const IMAGE_BASE = "https://suyambufoodproducts-demohost-4.onrender.com";
+const IMAGE_BASE = "http://localhost:5000";
 
 /* ----------------------- AUTH ----------------------- */
 exports.login = async (req, res) => {
@@ -670,5 +670,288 @@ exports.getProfile = async (req, res) => {
   } catch (error) {
     console.error("❌ Error fetching profile:", error);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+exports.getAllOrders = async (req, res) => {
+  try {
+    const ordersQuery = `
+      SELECT o.id AS order_id, o.customer_id, o.address_id, o.order_date, o.order_status_id, 
+             o.total_amount, o.payment_method_id, o.tracking_number, o.updated_at, o.order_method_id,
+             o.invoice_number,
+             a.street, a.city, a.state, a.zip_code, a.country,
+             os.status AS order_status,
+             pm.method AS payment_method,
+             om.method AS order_method,
+             c.username, c.full_name, c.phone, c.email, c.created_at, c.updated_at
+      FROM orders o
+      JOIN addresses a ON o.address_id = a.id
+      JOIN order_status os ON o.order_status_id = os.id
+      JOIN payment_methods pm ON o.payment_method_id = pm.id
+      JOIN order_methods om ON o.order_method_id = om.id
+      JOIN customers c ON o.customer_id = c.id
+      ORDER BY o.order_date DESC
+    `;
+    const [orders] = await db.query(ordersQuery);
+
+    // Fetch all available order statuses
+    const [statusRows] = await db.query('SELECT status FROM order_status ORDER BY id');
+    const statuses = statusRows.map(row => row.status);
+
+    const itemsQuery = `
+      SELECT oi.order_id, oi.product_variant_id, oi.quantity, oi.price_at_purchase, oi.subtotal,
+             p.name, p.description, p.thumbnail_url, pv.variant_quantity, um.uom_name
+      FROM order_items oi
+      JOIN product_variants pv ON oi.product_variant_id = pv.id
+      JOIN products p ON pv.product_id = p.id
+      LEFT JOIN uom_master um ON pv.uom_id = um.id
+    `;
+    const [itemsRows] = await db.query(itemsQuery);
+
+    const itemsMap = {};
+    for (const row of itemsRows) {
+      const orderId = row.order_id;
+      if (!itemsMap[orderId]) {
+        itemsMap[orderId] = [];
+      }
+      itemsMap[orderId].push({
+        product_variant_id: row.product_variant_id,
+        quantity: row.quantity,
+        price_at_purchase: row.price_at_purchase,
+        subtotal: row.subtotal,
+        name: row.name,
+        description: row.description,
+        thumbnail_url: row.thumbnail_url,
+        variant_quantity: row.variant_quantity,
+        uom_name: row.uom_name
+      });
+    }
+
+    for (let order of orders) {
+      order.items = itemsMap[order.order_id] || [];
+      order.address = {
+        street: order.street || 'N/A',
+        city: order.city || 'N/A',
+        state: order.state || 'N/A',
+        zip_code: order.zip_code || 'N/A',
+        country: order.country || 'N/A'
+      };
+      delete order.street;
+      delete order.city;
+      delete order.state;
+      delete order.zip_code;
+      delete order.country;
+
+      order.customer = {
+        username: order.username || 'N/A',
+        full_name: order.full_name || 'N/A',
+        phone: order.phone || 'N/A',
+        email: order.email || 'N/A',
+        created_at: order.created_at || 'N/A',
+        updated_at: order.updated_at || 'N/A'
+      };
+      delete order.username;
+      delete order.full_name;
+      delete order.phone;
+      delete order.email;
+      delete order.created_at;
+      delete order.updated_at;
+    }
+
+    res.status(200).json({ orders, statuses });
+  } catch (error) {
+    console.error('Get all orders error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+
+
+
+
+
+
+
+// In adminController.js, add this new export
+exports.updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  if (!orderId || !status) {
+    return res.status(400).json({ message: 'Missing orderId or status' });
+  }
+
+  if (isNaN(orderId)) {
+    return res.status(400).json({ message: 'Invalid orderId' });
+  }
+
+  const parsedOrderId = parseInt(orderId, 10);
+
+  try {
+    // Find status id using exact status name from DB
+    const [statusRows] = await db.query('SELECT id FROM order_status WHERE status = ?', [status]);
+    if (statusRows.length === 0) {
+      return res.status(404).json({ message: 'Status not found' });
+    }
+
+    const statusId = statusRows[0].id;
+
+    // Update order
+    const [result] = await db.query(
+      'UPDATE orders SET order_status_id = ?, updated_at = NOW() WHERE id = ?',
+      [statusId, parsedOrderId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    res.status(200).json({ message: 'Status updated successfully' });
+  } catch (error) {
+    console.error('Update order status error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+};
+exports.getDashboardData = async (req, res) => {
+  try {
+    // Total customers
+    const [customersResult] = await db.query('SELECT COUNT(*) as total FROM customers');
+    const totalCustomers = customersResult[0].total;
+
+    // Customers with orders
+    const [customersWithOrdersResult] = await db.query('SELECT COUNT(DISTINCT customer_id) as total FROM orders');
+    const customersWithOrders = customersWithOrdersResult[0].total;
+
+    // Customers without orders
+    const customersWithoutOrders = totalCustomers - customersWithOrders;
+
+    // Total products
+    const [productsResult] = await db.query('SELECT COUNT(*) as total FROM products');
+    const totalProducts = productsResult[0].total;
+
+    // Total orders
+    const [ordersResult] = await db.query('SELECT COUNT(*) as total FROM orders');
+    const totalOrders = ordersResult[0].total;
+
+    // Total revenue (only delivered orders)
+    const [revenueResult] = await db.query(`
+      SELECT COALESCE(SUM(o.total_amount), 0) as total 
+      FROM orders o 
+      JOIN order_status os ON o.order_status_id = os.id 
+      WHERE os.status = 'delivered'
+    `);
+    const totalRevenue = parseFloat(revenueResult[0].total);
+
+    // Orders by status
+    const [ordersByStatus] = await db.query(`
+      SELECT os.status, COUNT(o.id) as count 
+      FROM orders o 
+      JOIN order_status os ON o.order_status_id = os.id 
+      GROUP BY o.order_status_id, os.status
+      ORDER BY os.id
+    `);
+
+    // Stock statuses by products
+    const [stockStatusResult] = await db.query(`
+      SELECT ss.status, COUNT(p.id) as count 
+      FROM products p 
+      JOIN stock_statuses ss ON p.stock_status_id = ss.id 
+      GROUP BY p.stock_status_id, ss.status
+      ORDER BY ss.id
+    `);
+
+    // Top 5 wished products
+    const [topWishedProducts] = await db.query(`
+      SELECT p.id, p.name, p.thumbnail_url, COUNT(w.id) as wish_count
+      FROM wishlist w
+      JOIN products p ON w.product_id = p.id
+      WHERE w.is_liked = 1
+      GROUP BY w.product_id, p.id, p.name, p.thumbnail_url
+      ORDER BY wish_count DESC
+      LIMIT 5
+    `);
+
+    // Today registered customers
+    const [todaySignupResult] = await db.query('SELECT COUNT(*) as count FROM customers WHERE DATE(created_at) = CURDATE()');
+    const todayRegistered = todaySignupResult[0].count;
+
+    // Customer signups by date
+    const [customerSignups] = await db.query(`
+      SELECT DATE(created_at) as date, COUNT(*) as count
+      FROM customers
+      GROUP BY DATE(created_at)
+      ORDER BY date DESC
+      LIMIT 30
+    `);
+    const customerDates = customerSignups.map(row => row.date);
+    const customerCounts = customerSignups.map(row => row.count);
+
+    // Sales Performance
+    const [salesResult] = await db.query(`
+      SELECT p.name, SUM(oi.quantity) as units_sold, SUM(oi.subtotal) as revenue
+      FROM orders o
+      JOIN order_items oi ON o.id = oi.order_id
+      JOIN product_variants pv ON oi.product_variant_id = pv.id
+      JOIN products p ON pv.product_id = p.id
+      JOIN order_status os ON o.order_status_id = os.id
+      WHERE os.status = 'delivered'
+      GROUP BY p.id, p.name
+      ORDER BY revenue DESC
+      LIMIT 10
+    `);
+
+    // Locations: States
+    const [statesResult] = await db.query(`
+      SELECT a.state, COUNT(o.id) as count
+      FROM orders o
+      JOIN addresses a ON o.address_id = a.id
+      JOIN order_status os ON o.order_status_id = os.id
+      WHERE os.status = 'delivered'
+      GROUP BY a.state
+      ORDER BY count DESC
+    `);
+
+    // Locations: Cities
+    const [citiesResult] = await db.query(`
+      SELECT a.city, COUNT(o.id) as count
+      FROM orders o
+      JOIN addresses a ON o.address_id = a.id
+      JOIN order_status os ON o.order_status_id = os.id
+      WHERE os.status = 'delivered'
+      GROUP BY a.city
+      ORDER BY count DESC
+      LIMIT 10
+    `);
+
+    res.status(200).json({
+      customerBreakdown: {
+        total: totalCustomers,
+        orderingCustomers: customersWithOrders,
+        prospectiveCustomers: customersWithoutOrders
+      },
+      totalProducts,
+      stockStatuses: stockStatusResult,
+      totalOrders,
+      totalRevenue,
+      topWishedProducts,
+      customerSignups: {
+        labels: customerDates,
+        data: customerCounts,
+        totalRegistered: totalCustomers,
+        todayRegistered
+      },
+      ordersByStatus,
+      salesPerformance: {
+        products: salesResult
+      },
+      locations: {
+        states: statesResult,
+        cities: citiesResult
+      }
+    });
+  } catch (error) {
+    console.error('Dashboard data error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };

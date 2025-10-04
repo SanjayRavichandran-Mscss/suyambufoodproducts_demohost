@@ -62,6 +62,25 @@ router.get("/customers", adminController.viewCustomers);
 /* -------------------- ADMIN PROFILE -------------------- */
 router.get("/profile/:adminId", adminController.getProfile);
 
+
+router.get("/orders", (req, res, next) => {
+  console.log("➡️ GET /api/admin/orders hit");
+  next();
+}, adminController.getAllOrders);
+
+
+router.put("/orders/:orderId/status", (req, res, next) => {
+  console.log("➡️ PUT /api/admin/orders/:orderId/status hit");
+  next();
+}, adminController.updateOrderStatus);
+
+/* -------------------- DASHBOARD -------------------- */
+router.get("/dashboard", (req, res, next) => {
+  console.log("➡️ GET /api/admin/dashboard hit");
+  next();
+}, adminController.getDashboardData);
+
 console.log("✅ Admin routes loaded");
+
 
 module.exports = router;
